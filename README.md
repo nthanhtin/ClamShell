@@ -9,7 +9,10 @@ Stop midway and it snaps back after half a second.
 
 ## Try it
 
-Requires **macOS 14+**, Xcode with Metal tools, and an Apple Development
+Download the app from [Releases](https://github.com/nthanhtin/ClamShell/releases/latest)
+for Apple Silicon Macs running macOS 14 or later.
+
+To build from source, use Xcode with Metal tools and an Apple Development
 signing certificate in your keychain.
 
 ```sh
@@ -52,3 +55,5 @@ git push origin v0.1.1
 
 No signing secrets needed. Downloads are ad hoc signed and aren't notarized;
 see the [release notes](.github/release-notes.md) for opening them.
+
+Licensed under [MIT](LICENSE).
