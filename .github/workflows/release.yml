@@ -57,3 +57,33 @@ jobs:
           gh release create "$RELEASE_TAG" "build/ClamShell-${RELEASE_TAG}-arm64.zip" \
             --verify-tag --title "ClamShell $RELEASE_TAG" --generate-notes \
             --notes-file .github/release-notes.md
+
+  update-homebrew:
+    needs: release
+    runs-on: macos-15
+    timeout-minutes: 5
+    concurrency:
+      group: homebrew-tap
+      cancel-in-progress: false
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      RELEASE_TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: main
+
+      - name: Update Homebrew cask
+        run: |
+          gh release download "$RELEASE_TAG" --pattern "ClamShell-${RELEASE_TAG}-arm64.zip" --dir "$RUNNER_TEMP"
+          ruby Tools/update-cask.rb "$RELEASE_TAG" "$RUNNER_TEMP/ClamShell-${RELEASE_TAG}-arm64.zip" Casks/clamshell.rb
+          git add Casks/clamshell.rb
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m "Update Homebrew cask to $RELEASE_TAG"
+          git pull --rebase origin main
+          git push origin HEAD:main

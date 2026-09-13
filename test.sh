@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 cd "$(dirname "$0")"
+ruby Tests/homebrew.rb
 mkdir -p build/ModuleCache
 xcrun swiftc -swift-version 6 -module-cache-path build/ModuleCache \
     Sources/LidSensor.swift Sources/FoldMath.swift Tests/main.swift -o build/checks -framework IOKit
