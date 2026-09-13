@@ -39,6 +39,16 @@ struct ControllerChecks {
             assert(controller.angle != nil, "The display link must deliver sensor updates")
             print("Display-synchronized sensor callback passed")
         }
+        // GitHub runners have virtual displays; these overlay checks need a MacBook screen.
+        guard NSScreen.screens.contains(where: { screen in
+            guard let id = screen.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? CGDirectDisplayID else {
+                return false
+            }
+            return CGDisplayIsBuiltin(id) != 0
+        }) else {
+            print("Skipping desktop controller checks: no built-in display")
+            return
+        }
         controller.effect = .nativeBlur
         controller.enabled = true
         let open = controller.startAngle + 5

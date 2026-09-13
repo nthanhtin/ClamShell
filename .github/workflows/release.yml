@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: macos-15
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: bash
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+      RELEASE_TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Install build tools
+        run: |
+          brew install rtk
+          rtk proxy xcodebuild -downloadComponent MetalToolchain
+
+      - name: Set release version
+        run: |
+          if [[ ! "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo '::error::Use a version tag such as v0.1.1.'
+            exit 1
+          fi
+          rtk proxy plutil -replace CFBundleShortVersionString -string "${RELEASE_TAG#v}" Info.plist
+          rtk proxy plutil -replace CFBundleVersion -string "$GITHUB_RUN_NUMBER" Info.plist
+
+      - name: Test
+        run: rtk proxy bash test.sh
+
+      - name: Build and package
+        env:
+          CLAMSHELL_SIGNING_IDENTITY: '-'
+        run: |
+          rtk proxy bash build.sh
+          rtk proxy lipo build/ClamShell.app/Contents/MacOS/ClamShell -verify_arch arm64
+          rtk proxy ditto -c -k --sequesterRsrc --keepParent build/ClamShell.app "build/ClamShell-${RELEASE_TAG}-arm64.zip"
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          rtk proxy gh release create "$RELEASE_TAG" "build/ClamShell-${RELEASE_TAG}-arm64.zip" \
+            --verify-tag --title "ClamShell $RELEASE_TAG" --generate-notes \
+            --notes-file .github/release-notes.md

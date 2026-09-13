@@ -40,3 +40,15 @@ Thanks to [LidAngleSensor](https://github.com/samhenrigold/LidAngleSensor) and
 
 Tests: `rtk proxy bash test.sh` · Regenerate the icon:
 `rtk proxy bash Tools/render-assets.sh`.
+
+## Release
+
+Push a version tag to run the tests and publish an Apple Silicon app ZIP:
+
+```sh
+rtk git tag v0.1.1
+rtk git push origin v0.1.1
+```
+
+No signing secrets needed. Downloads are ad hoc signed and aren't notarized;
+see the [release notes](.github/release-notes.md) for opening them.
