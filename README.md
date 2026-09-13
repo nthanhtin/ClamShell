@@ -9,12 +9,12 @@ Stop midway and it snaps back after half a second.
 
 ## Try it
 
-Requires **macOS 14+**, Xcode with Metal tools, `rtk`, and an Apple Development
+Requires **macOS 14+**, Xcode with Metal tools, and an Apple Development
 signing certificate in your keychain.
 
 ```sh
-rtk proxy bash build.sh
-rtk proxy open build/ClamShell.app
+bash build.sh
+open build/ClamShell.app
 ```
 
 Choose **Perspective fold**, allow Screen Recording, then enable desktop animation.
@@ -38,16 +38,16 @@ Thanks to [LidAngleSensor](https://github.com/samhenrigold/LidAngleSensor) and
 [mac-angle](https://github.com/ufoym/mac-angle) for the sensor research, and
 [iphone-duo](https://github.com/chuspeeism/iphone-duo) for the fold reference.
 
-Tests: `rtk proxy bash test.sh` · Regenerate the icon:
-`rtk proxy bash Tools/render-assets.sh`.
+Tests: `bash test.sh` · Regenerate the icon:
+`bash Tools/render-assets.sh`.
 
 ## Release
 
 Push a version tag to run the tests and publish an Apple Silicon app ZIP:
 
 ```sh
-rtk git tag v0.1.1
-rtk git push origin v0.1.1
+git tag v0.1.1
+git push origin v0.1.1
 ```
 
 No signing secrets needed. Downloads are ad hoc signed and aren't notarized;
