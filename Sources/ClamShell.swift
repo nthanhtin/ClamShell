@@ -31,7 +31,9 @@ struct FoldSurface: View, @MainActor Animatable {
     }
 }
 
-private struct SampleScene: View {
+struct SampleScene: View {
+    var showsTitle = true
+
     var body: some View {
         GeometryReader { g in
             ZStack {
@@ -52,11 +54,13 @@ private struct SampleScene: View {
                                          startPoint: .topLeading, endPoint: .bottomTrailing))
                     .shadow(color: .black.opacity(0.55), radius: 22, x: -12, y: 8)
                 }
-                VStack(spacing: 6) {
-                    Text("ClamShell").font(.system(size: 44, weight: .light, design: .rounded))
-                    Text("A little motion. A different perspective.").font(.callout)
+                if showsTitle {
+                    VStack(spacing: 6) {
+                        Text("ClamShell").font(.system(size: 44, weight: .light, design: .rounded))
+                        Text("A little motion. A different perspective.").font(.callout)
+                    }
+                    .foregroundStyle(.white).shadow(radius: 15)
                 }
-                .foregroundStyle(.white).shadow(radius: 15)
             }
         }
     }
@@ -567,7 +571,7 @@ private struct AnimationSettings: View {
     }
 }
 
-#if !CONTROLLER_CHECKS
+#if !CONTROLLER_CHECKS && !ASSET_RENDERER
 @main
 #endif
 struct ClamShellApp: App {

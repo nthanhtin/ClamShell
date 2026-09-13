@@ -14,6 +14,7 @@ rtk proxy xcrun swiftc -swift-version 6 -O -target "$(uname -m)-apple-macos14.0"
     -o build/ClamShell.app/Contents/MacOS/ClamShell \
     -framework AppKit -framework SwiftUI -framework ScreenCaptureKit -framework IOKit
 cp Info.plist build/ClamShell.app/Contents/Info.plist
+cp Assets/ClamShell.icns build/ClamShell.app/Contents/Resources/ClamShell.icns
 rtk proxy codesign --force --sign "$CLAMSHELL_SIGNING_IDENTITY" build/ClamShell.app
 rtk proxy codesign --verify --strict build/ClamShell.app
 echo "Built: $PWD/build/ClamShell.app"
