@@ -31,8 +31,23 @@ pause the effect, or quit.
 
 ## Try it
 
-Download the app from [Releases](https://github.com/nthanhtin/ClamShell/releases/latest)
-for Apple Silicon Macs running macOS 14 or later.
+For Apple Silicon Macs running macOS 14 or later. Set up the Homebrew tap once:
+
+```sh
+brew tap nthanhtin/clamshell https://github.com/nthanhtin/ClamShell
+brew trust nthanhtin/clamshell
+```
+
+Then install:
+
+```sh
+brew install --cask clamshell
+```
+
+Homebrew puts the app in Applications. Update it later with `brew update` and
+`brew upgrade --cask clamshell`.
+
+Or download the ZIP from [Releases](https://github.com/nthanhtin/ClamShell/releases/latest).
 
 Unzip it, drag **ClamShell.app** into **Applications**, and open it. Choose an effect
 and click **Enable desktop animation**. Allow Screen Recording for Perspective
@@ -79,7 +94,8 @@ Tests: `bash test.sh` · Regenerate the icon:
 
 ## Release
 
-Push a version tag to run the tests and publish an Apple Silicon app ZIP:
+Push a version tag to run the tests, publish an Apple Silicon app ZIP, and update
+the Homebrew cask on `main`:
 
 ```sh
 git tag v0.1.1
